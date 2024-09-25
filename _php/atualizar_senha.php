@@ -5,7 +5,7 @@
         $email = $_POST['email'];
         $novaSenha = $_POST['senha'];
         $confirmarSenha = $_POST['confirmarSenha'];
-        $senhaAtual = $_POST['senhaAtual'];
+        //$senhaAtual = $_POST['senhaAtual']; // Removido porque essa lógica é para trocar a senha caso não lembre dela
 
         // Verificar se as senhas coincidem
         if ($novaSenha !== $confirmarSenha) {
@@ -31,12 +31,12 @@
             } else {
 
                 $usuario = $resultado->fetch_assoc();
-                if (password_verify($senhaAtual, $usuario['senha'])) {
+                /*if (password_verify($senhaAtual, $usuario['senha'])) {
                     // Senha atual correta, pode alterar os dados
                 }
                 else {
                     // Senha atual incorreta, não pode alterar os dados
-                }
+                }*/
 
                 // Atualizar a senha
                 $senhaHash = password_hash($novaSenha, PASSWORD_BCRYPT);
