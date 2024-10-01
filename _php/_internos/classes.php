@@ -272,12 +272,18 @@
             }
         }
 
+        private function buildQueryWhere(UsuarioVO $uVO) : string {
+
+        }
+
         public function selectWhere(UsuarioVO $uVO) : array | null {
 
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
             $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
 
-            $query = "SELECT * FROM $nomeTabelaUsuario WHERE ";
+            $queryWhere = $this->buildQueryWhere($uVO);
+
+            $query = "SELECT * FROM $nomeTabelaUsuario WHERE $queryWhere";
 
             try {
                 $conn = getConexaoBancoMySQL();
@@ -298,13 +304,15 @@
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
             $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
 
-            $query = "UPDATE $nomeTabelaUsuario SET " . 
-            $nomeColunasUsuario[1] . " = ?," . 
-            $nomeColunasUsuario[2] . " = ?," . 
-            $nomeColunasUsuario[3] . " = ?," . 
-            $nomeColunasUsuario[4] . " = ?," . 
-            $nomeColunasUsuario[5] . " = ?
-            WHERE " . $nomeColunasUsuario[0] . " = ?";
+            $querySet = $nomeColunasUsuario[1] . " = ?," . 
+                        $nomeColunasUsuario[2] . " = ?," . 
+                        $nomeColunasUsuario[3] . " = ?," . 
+                        $nomeColunasUsuario[4] . " = ?," . 
+                        $nomeColunasUsuario[5] . " = ?";
+
+            $queryWhere = $nomeColunasUsuario[0] . " = ?";
+
+            $query = "UPDATE $nomeTabelaUsuario SET $querySet WHERE $queryWhere";
 
             try {
                 $conn = getConexaoBancoMySQL();
