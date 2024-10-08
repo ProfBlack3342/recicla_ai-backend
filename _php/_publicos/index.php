@@ -1,7 +1,7 @@
 <?php
-    require_once '_php/scripts.php';
-    require_once '_php/interfaces.php';
-    require_once '_php/classes.php';
+    require_once '_internos/scripts.php';
+    require_once '_internos/interfaces.php';
+    require_once '_internos/classes.php';
 
     if(isSessaoAtiva()) {
         echo"<script>
@@ -78,7 +78,7 @@
         <section id="cadastrar">
             <h2>Cadastre-se para mais informações!</h2>
             <div class="form-container">
-                <form name="cadastro" action="_php/novo_cadastro.php" method="post">
+                <form name="cadastro" action="_internos/novo_cadastro.php" method="post">
                     <label for="login">Login:</label>
                     <input type="text" id="login" name="login" placeholder="usuario123" required>
                     <br>
