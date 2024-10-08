@@ -113,49 +113,6 @@
      */
     final class UsuarioDAOMySQL implements IUsuarioDAO {
 
-        // Variáveis para evitar múltiplos acessos de métodos estáticos
-        private $nomeTabela;
-        private $nomesColunasTabela;
-        private $quantColunasTabela;
-
-        // Construtor
-        public function __construct() {
-            $this->nomeTabela = UsuarioVO::getNomeTabela();
-            $this->nomesColunasTabela = UsuarioVO::getNomesColunasTabela();
-            $this->quantColunasTabela = count($this->nomesColunasTabela);
-        }
-
-        /**
-         * Função privada para criar um array com todos os dados de um usuário
-         * @param UsuarioVO &$usuario - Referência ao usuario que contém os dados
-         */
-        private function criarArrayDados(UsuarioVO &$usuario) : array {
-            return [
-                $usuario->getId(),
-                $usuario->getIdTipoUsuario(),
-                $usuario->getLogin(),
-                $usuario->getSenha(),
-                $usuario->getNome(),
-                $usuario->getEmail()
-            ];
-        }
-
-        /**
-         * Função privada que cria, preenche e retorna um usuário a partir de um array equivalente a uma linha no banco de dados
-         * @param array &$dados - Referência a linha de um ResultSet com os dados
-         */
-        private function preencherUsuarioSaida(array &$dados) : UsuarioVO {
-            $uVOs = new UsuarioVO();
-            $uVOs->setId($dados[$this->nomesColunasTabela[0]]);
-            $uVOs->setIdTipoUsuario($dados[$this->nomesColunasTabela[1]]);
-            $uVOs->setLogin($dados[$this->nomesColunasTabela[2]]);
-            $uVOs->setSenha($this->nomesColunasTabela[3]);
-            $uVOs->setNome($dados[$this->nomesColunasTabela[4]]);
-            $uVOs->setEmail($dados[$this->nomesColunasTabela[5]]);
-
-            return $uVOs;
-        }
-
         public function login(string $login, string $senha) : UsuarioVO | bool | null {
 
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
@@ -165,9 +122,8 @@
 
             try {
                 $conn = getConexaoBancoMySQL();
-                
-
                 $stmt = $conn->prepare($query);
+
                 if($stmt) {
 
                     $stmt->bind_param("s", $login);
@@ -233,14 +189,50 @@
 
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
             $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
-
-            $query = "INSERT INTO $nomeTabelaUsuario VALUES (";
+            $queryInto = $nomeTabelaUsuario . "(" .
+            $nomeColunasUsuario[1] . ", " .
+            $nomeColunasUsuario[2] . ", " .
+            $nomeColunasUsuario[3] . ", " .
+            $nomeColunasUsuario[4] . ", " .
+            $nomeColunasUsuario[5] . ")";
+            $query = "INSERT INTO $queryInto VALUES (?, ?, ?, ?)";
 
             try {
                 $conn = getConexaoBancoMySQL();
+                $stmt = $conn->prepare($query);
                 
+                if($stmt) {
 
+                    $idTipo = $uVO->getIdTipoUsuario();
+                    $login = $uVO->getLogin();
+                    $senha = $uVO->getSenha();
+                    $nome = $uVO->getNome();
+                    $email = $uVO->getEmail();
 
+                    if(empty($idTipo) || empty($login) || empty($senha) || empty($nome) || empty($email))
+                        // Valor não informado, retornar 'false'
+                        return false;
+
+                    $stmt->bind_param("issss", $idTipo, $login, $senha, $nome, $email);
+
+                    if($stmt->execute()){
+                        // Executado com sucesso, retornar 'true'
+                        return true;
+                    }
+                    else {
+                        // Falha na execução do PreparedStatement
+                        $erro = $stmt->error;
+                        $numErro = $stmt->errno;
+                        throw new MySQLException($erro, $numErro);
+                    }
+                    
+                }
+                else {
+                    // Falha ao criar o PreparedStatement
+                    $erro = $conn->error;
+                    $numErro = $conn->errno;
+                    throw new MySQLException($erro, $numErro);
+                }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
@@ -254,14 +246,50 @@
         public function selectAll() : array | null {
 
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
-            $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
-
             $query = "SELECT * FROM $nomeTabelaUsuario";
 
             try {
                 $conn = getConexaoBancoMySQL();
+                $stmt = $conn->prepare($query);
 
-                
+                if($stmt) {
+                    if($stmt->execute()){
+
+                        $stmt->bind_result($idUsuario, $idTipoUsuario, $loginUsuario, $senhaUsuario, $nomeUsuario, $emailUsuario);
+                        $arrayRetorno = [];
+                        
+                        while($stmt->fetch()) {
+                            $uVO = new UsuarioVO();
+                            $uVO->setId($idUsuario);
+                            $uVO->setIdTipoUsuario($idTipoUsuario);
+                            $uVO->setLogin($loginUsuario);
+                            $uVO->setSenha($senhaUsuario);
+                            $uVO->setNome($nomeUsuario);
+                            $uVO->setEmail($emailUsuario);
+
+                            $arrayRetorno[] = $uVO;
+                        }
+
+                        if(count($arrayRetorno) != 0) 
+                            return $arrayRetorno;
+                        else
+                            return null;
+                        
+                    }
+                    else {
+                        // Falha na execução do PreparedStatement
+                        $erro = $stmt->error;
+                        $numErro = $stmt->errno;
+                        throw new MySQLException($erro, $numErro);
+                    }
+                    
+                }
+                else {
+                    // Falha ao criar o PreparedStatement
+                    $erro = $conn->error;
+                    $numErro = $conn->errno;
+                    throw new MySQLException($erro, $numErro);
+                }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
@@ -272,30 +300,129 @@
             }
         }
 
-        private function buildQueryWhere(UsuarioVO $uVO) : string {
+        private function buildQueryWhere(UsuarioVO $uVO) : string | null {
 
+            $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
+            $quantColunasUsuario - count($nomeColunasUsuario);
+            $flag = false;
+            $stringRetorno = "";
+
+            for ($i = 0; $i < $quantColunasUsuario; $i++) { 
+                $dado = null;
+
+                switch($i) {
+                    case 0: {
+                        // ID
+                        $dado = $uVO->getId();
+                        break;
+                    }
+                    case 1: {
+                        // ID do Tipo
+                        $dado = $uVO->getIdTipoUsuario();
+                        break;
+                    }
+                    case 2: {
+                        // Login
+                        $dado = $uVO->getLogin();
+                        break;
+                    }
+                    case 3: {
+                        // Senha
+                        $dado = $uVO->getSenha();
+                        break;
+                    }
+                    case 4: {
+                        // Nome
+                        $dado = $uVO->getNome();
+                        break;
+                    }
+                    case 5: {
+                        // E-mail
+                        $dado = $uVO->getEmail();
+                        break;
+                    }
+                }
+
+                if(!empty($dado)) {
+                    if($flag)
+                        $stringRetorno .= " AND " . $nomeColunasUsuario[$i] . " = " . $dado;
+                    else
+                        $stringRetorno .= $nomeColunasUsuario[$i] . " = " . $dado;
+
+                    $flag = true;
+                }
+            }
+
+            if($stringRetorno === "")
+                return null;
+            else
+                return $stringRetorno;
         }
 
         public function selectWhere(UsuarioVO $uVO) : array | null {
 
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
-            $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
-
             $queryWhere = $this->buildQueryWhere($uVO);
+            if(empty($queryWhere)) {
 
-            $query = "SELECT * FROM $nomeTabelaUsuario WHERE $queryWhere";
-
-            try {
-                $conn = getConexaoBancoMySQL();
-
-                
+                // Nenhum dado informado como filtro, listar todos os usuários
+                return $this->selectAll();
             }
-            catch(MySQLException $sqle) {
-                throw $sqle;
-            }
-            finally {
-                $stmt->close();
-                $conn->close();
+            else {
+
+                $query = "SELECT * FROM $nomeTabelaUsuario WHERE $queryWhere";
+
+                try {
+                    $conn = getConexaoBancoMySQL();
+                    $stmt = $conn->prepare($query);
+
+                    if($stmt) {
+
+                        if($stmt->execute()){
+
+                            $stmt->bind_result($idUsuario, $idTipoUsuario, $loginUsuario, $senhaUsuario, $nomeUsuario, $emailUsuario);
+                            $arrayRetorno = [];
+                            
+                            while($stmt->fetch()) {
+                                $uVO = new UsuarioVO();
+                                $uVO->setId($idUsuario);
+                                $uVO->setIdTipoUsuario($idTipoUsuario);
+                                $uVO->setLogin($loginUsuario);
+                                $uVO->setSenha($senhaUsuario);
+                                $uVO->setNome($nomeUsuario);
+                                $uVO->setEmail($emailUsuario);
+
+                                $arrayRetorno[] = $uVO;
+                            }
+
+                            if(count($arrayRetorno) != 0) 
+                                return $arrayRetorno;
+                            else
+                                return null;
+                            
+                        }
+                        else {
+                            // Falha na execução do PreparedStatement
+                            $erro = $stmt->error;
+                            $numErro = $stmt->errno;
+                            throw new MySQLException($erro, $numErro);
+                        }
+                        
+                    }
+                    else {
+                        // Falha ao criar o PreparedStatement
+                        $erro = $conn->error;
+                        $numErro = $conn->errno;
+                        throw new MySQLException($erro, $numErro);
+                    }
+                }
+                catch(MySQLException $sqle) {
+                    throw $sqle;
+                }
+                finally {
+                    $stmt->close();
+                    $conn->close();
+                }
             }
         }
 
@@ -316,8 +443,41 @@
 
             try {
                 $conn = getConexaoBancoMySQL();
-
+                $stmt = $conn->prepare($query);
                 
+                if($stmt) {
+
+                    $id = $uVO->getId();
+                    $idTipo = $uVO->getIdTipoUsuario();
+                    $login = $uVO->getLogin();
+                    $senha = $uVO->getSenha();
+                    $nome = $uVO->getNome();
+                    $email = $uVO->getEmail();
+
+                    if(empty($id) || empty($idTipo) || empty($login) || empty($senha) || empty($nome) || empty($email))
+                        // Valor não informado, retornar 'false'
+                        return false;
+
+                    $stmt->bind_param("issssi", $idTipo, $login, $senha, $nome, $email, $id);
+
+                    if($stmt->execute()){
+                        // Executado com sucesso, retornar 'true'
+                        return true;
+                    }
+                    else {
+                        // Falha na execução do PreparedStatement
+                        $erro = $stmt->error;
+                        $numErro = $stmt->errno;
+                        throw new MySQLException($erro, $numErro);
+                    }
+                    
+                }
+                else {
+                    // Falha ao criar o PreparedStatement
+                    $erro = $conn->error;
+                    $numErro = $conn->errno;
+                    throw new MySQLException($erro, $numErro);
+                }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
@@ -334,18 +494,32 @@
             $nomeColunaIdUsuario = UsuarioVO::getNomesColunasTabela()[0];
 
             $query = "DELETE FROM $nomeTabelaUsuario WHERE $nomeColunaIdUsuario = ?";
+            $stmt = $conn->prepare($query);
+                
+            if($stmt) {
+                if(empty($id))
+                    // Valor não informado, retornar 'false'
+                    return false;
 
-            try {
-                $conn = getConexaoBancoMySQL();
+                $stmt->bind_param("i", $id);
 
+                if($stmt->execute()){
+                    // Executado com sucesso, retornar 'true'
+                    return true;
+                }
+                else {
+                    // Falha na execução do PreparedStatement
+                    $erro = $stmt->error;
+                    $numErro = $stmt->errno;
+                    throw new MySQLException($erro, $numErro);
+                }
                 
             }
-            catch(MySQLException $sqle) {
-                throw $sqle;
-            }
-            finally {
-                $stmt->close();
-                $conn->close();
+            else {
+                // Falha ao criar o PreparedStatement
+                $erro = $conn->error;
+                $numErro = $conn->errno;
+                throw new MySQLException($erro, $numErro);
             }
         }
     }
