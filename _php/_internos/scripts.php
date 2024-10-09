@@ -26,6 +26,7 @@
      */
     function fazerLogin(string $login, string $senha) : bool {
 
+        $nomesDados = UsuarioVO::getNomesColunasTabela();
         $tentativaLogin = FactoryServicos::getServicosUsuario()->loginUsuario($login, $senha);
 
         if(isset($tentativaLogin)) {
@@ -35,12 +36,12 @@
             else {
                 session_start();
 
-                $_SESSION[UsuarioVO::getNomesColunasTabela[0]] = $tentativaLogin->getId();
-                $_SESSION[UsuarioVO::getNomesColunasTabela[1]] = $tentativaLogin->getIdTipoUsuario();
-                $_SESSION[UsuarioVO::getNomesColunasTabela[2]] = $tentativaLogin->getLogin();
-                $_SESSION[UsuarioVO::getNomesColunasTabela[3]] = $tentativaLogin->getSenha();
-                $_SESSION[UsuarioVO::getNomesColunasTabela[4]] = $tentativaLogin->getNome();
-                $_SESSION[UsuarioVO::getNomesColunasTabela[5]] = $tentativaLogin->getEmail();
+                $_SESSION[$nomesDados[0]] = $tentativaLogin->getId();
+                $_SESSION[$nomesDados[1]] = $tentativaLogin->getIdTipoUsuario();
+                $_SESSION[$nomesDados[2]] = $tentativaLogin->getLogin();
+                $_SESSION[$nomesDados[3]] = $tentativaLogin->getSenha();
+                $_SESSION[$nomesDados[4]] = $tentativaLogin->getNome();
+                $_SESSION[$nomesDados[5]] = $tentativaLogin->getEmail();
     
                 return true;
             }
