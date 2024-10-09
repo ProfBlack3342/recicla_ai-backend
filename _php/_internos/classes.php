@@ -21,7 +21,7 @@
         }
 
         // Getter e Setter para 'id'
-        public function getId() : ?int {return $this->id;}
+        public function getId() : int | null {return $this->id;}
         public function setId(int $id) : void {$this->id = $id;}
     }
 
@@ -77,16 +77,16 @@
         public static function getNomesColunasTabela() {return self::$nomesColunasTabela;}
 
         // Getter e Setter para 'idTipoUsuario'
-        public function getIdTipoUsuario(): ?int {return $this->idTipoUsuario;}
+        public function getIdTipoUsuario(): int | null {return $this->idTipoUsuario;}
         public function setIdTipoUsuario(int $idTipoUsuario): void {$this->idTipoUsuario = $idTipoUsuario;}
 
         // Getter e Setter para 'login'
-        public function getLogin(): ?string {return $this->login;}
+        public function getLogin(): string | null {return $this->login;}
         public function setLogin(string $login): void {$this->login = $login;}
 
         // Getter e Setter para 'senha'
         // Recebe uma senha exposta e a salva como um hash criado a partir do algoritmo bcrypt
-        public function getSenha(): ?string {return $this->senha;}
+        public function getSenha(): string | null {return $this->senha;}
         public function setSenha(string $senha): void {
             $hash = false;
             
@@ -99,11 +99,11 @@
         }
 
         // Getter e Setter para 'nome'
-        public function getNome(): ?string {return $this->nome;}
+        public function getNome(): string | null {return $this->nome;}
         public function setNome(string $nome): void {$this->nome = $nome;}
 
         // Getter e Setter para 'email'
-        public function getEmail(): ?string {return $this->email;}
+        public function getEmail(): string | null {return $this->email;}
         public function setEmail(string $email): void {$this->email = $email;}
     }
 
