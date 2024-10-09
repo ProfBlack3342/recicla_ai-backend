@@ -5,17 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Recicla Aí - Sobre nós</title>
-  <link rel="icon" href="_imgs/icone-recicla-ai.png" type="image/x-icon">
-  <link rel="stylesheet" type="text/css" href="_css/style.css">
+  <link rel="icon" href="../../_imgs/icone-recicla-ai.png" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="../../_css/style.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="_js/acessibilidade.js"></script>
-  <script src="_js/carrossel-imagens.js"></script>
+  <script src="../../_js/acessibilidade.js"></script>
+  <script src="../../_js/carrossel-imagens.js"></script>
 </head>
 
 <body class="acessibilidade">
   <header>
     <div>
-      <img src="_imgs/logo-atualizado.png" alt="Ícone do logo da empresa">
+      <img src="../../_imgs/logo-atualizado.png" alt="Ícone do logo da empresa">
       <div id="botao-acessibilidade">
         <button onclick="aumentarFonte()">A+</button>
         <button onclick="diminuirFonte()">A-</button>
@@ -25,10 +25,10 @@
       </div>
       <ul>
         <li><a href="index.php">Home</a></li>
-        <li><a href="o-que-e-descarte.html">O que é o Descarte Eletrônico</a></li>
-        <li><a href="por-que-descartar.html">Por que descartar corretamente?</a></li>
-        <li><a href="como-e-onde.html">Como e onde descartar</a></li>
-        <li><a href="sobre-nos.html">Sobre nós</a></li>
+        <li><a href="o-que-e-descarte.php">O que é o Descarte Eletrônico</a></li>
+        <li><a href="por-que-descartar.php">Por que descartar corretamente?</a></li>
+        <li><a href="como-e-onde.php">Como e onde descartar</a></li>
+        <li><a href="sobre-nos.php">Sobre nós</a></li>
         <li><a href="entrar.php">Entrar</a></li>
       </ul>
     </div>
@@ -40,11 +40,11 @@
   </script>
   </header>
 
-  <img src="_imgs/eletronico.jpg" class="banner-image" alt="Imagem 1 de eletrônicos no carrossel"
+  <img src="../../_imgs/eletronico.jpg" class="banner-image" alt="Imagem 1 de eletrônicos no carrossel"
     style="display: inline;">
-  <img src="_imgs/eletronico2.png" class="banner-image" alt="Imagem 2 de eletrônicos no carrossel"
+  <img src="../../_imgs/eletronico2.png" class="banner-image" alt="Imagem 2 de eletrônicos no carrossel"
     style="display: none;">
-  <img src="_imgs/eletronico3.png" class="banner-image" alt="Imagem 3 de eletrônicos no carrossel"
+  <img src="../../_imgs/eletronico3.png" class="banner-image" alt="Imagem 3 de eletrônicos no carrossel"
     style="display: none;">
   <button id="btnAnte">&laquo;</button>
   <button id="btnProx">&raquo;</button>
@@ -62,7 +62,7 @@
       <div class="container-cards">
         <div class="card-sobre-nos">
           <div class="container-imagem">
-            <img src="_imgs/eduardo.jpg" alt="Imagem do Eduardo">
+            <img src="../../_imgs/eduardo.jpg" alt="Imagem do Eduardo">
           </div>
           <div class="informacao-card">
             <h3>Eduardo Moreira</h3>
@@ -74,7 +74,7 @@
 
         <div class="card-sobre-nos">
           <div class="container-imagem">
-            <img src="_imgs/gabriel.jpg" alt="Imagem do Gabriel">
+            <img src="../../_imgs/gabriel.jpg" alt="Imagem do Gabriel">
           </div>
           <div class="informacao-card">
             <h3>Gabriel Concli</h3>
@@ -86,7 +86,7 @@
 
         <div class="card-sobre-nos">
           <div class="container-imagem">
-            <img src="_imgs/milena.jpg" alt="Imagem da Milena">
+            <img src="../../_imgs/milena.jpg" alt="Imagem da Milena">
           </div>
           <div class="informacao-card">
             <h3>Milena Bregalda</h3>
@@ -116,11 +116,11 @@
     <div id="redes">
       <h2>Redes Sociais</h2>
       <a href="https://www.facebook.com/senacrsoficial" target="_blank" rel="noreferrer noopener"><img
-          src="_imgs/facebook-icon-footer.svg" alt="Ícone do Facebook"></a>
+          src="../../_imgs/facebook-icon-footer.svg" alt="Ícone do Facebook"></a>
       <a href="https://www.instagram.com/senacrs/" target="_blank" rel="noreferrer noopener"><img
-          src="_imgs/instagram-icon-footer.svg" alt="Ícone do Instagram"></a>
+          src="../../_imgs/instagram-icon-footer.svg" alt="Ícone do Instagram"></a>
       <a href="https://twitter.com/senacrs" target="_blank" rel="noreferrer noopener"><img
-          src="_imgs/twitter-icon-footer.svg" alt="Ícone do Twitter"></a>
+          src="../../_imgs/twitter-icon-footer.svg" alt="Ícone do Twitter"></a>
     </div>
 
     <hr>
