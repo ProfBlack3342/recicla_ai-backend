@@ -1,7 +1,7 @@
 <?php
-    require_once 'scripts.php';
-    require_once 'interfaces.php';
-    require_once 'classes.php';
+    require_once '../_internos/scripts.php';
+    require_once '../_internos/interfaces.php';
+    require_once '../_internos/classes.php';
 
     $login = $_POST['login'];
     $senha1 = $_POST['senha1'];
@@ -17,24 +17,30 @@
         $usuarioVO->setNome($nome);
         $usuarioVO->setEmail($email);
 
-        $tentativaCadastro = FactoryServicos::getServicosUsuario()->cadastroUsuario($usuarioVO);
-
-        if(empty($tentativaCadastro)) {
+        try {
+            $tentativaCadastro = FactoryServicos::getServicosUsuario()->cadastroUsuario($usuarioVO);
+            if(empty($tentativaCadastro)) {
+                echo"<script>
+                        alert('Erro no cadastro!');
+                        window.location.href = '../_publicos/index.php';
+                    </script>";
+            }
+            else {
+                fazerLogin($login, $senha1);
+                session_start();
+            }
+        }
+        catch (MySQLException $sqle) {
             echo"<script>
-                    alert('Erro no cadastro!');
-                    window.location.href = '../index.php';
+                    alert('Exceção: ' . $sqle->getMessage());
+                    window.location.href = '../_publicos/index.php';
                 </script>";
         }
-        else {
-            fazerLogin($login, $senha1);
-        }
-
-        session_start();
     }
     else {
         echo"<script>
                 alert('As senhas não são iguais!');
-                window.location.href = '../index.php';
+                window.location.href = '../_publicos/index.php';
             </script>";
     }
 ?>
