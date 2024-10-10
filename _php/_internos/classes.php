@@ -142,21 +142,29 @@
                                     $uVO->setSenha($senhaUsuario);
                                     $uVO->setNome($nomeUsuario);
                                     $uVO->setEmail($emailUsuario);
+                                    $stmt->close();
+                                    $conn->close();
                                     return $uVO;
                                 }
                                 else {
                                     // Senha incorreta
+                                    $stmt->close();
+                                    $conn->close();
                                     return false;
                                 }
                             }
                             case null: {
                                 // Usuário não encontrado
+                                $stmt->close();
+                                $conn->close();
                                 return null;
                             }
                             default: {
                                 // Falha no fetching
                                 $erro = $stmt->error;
                                 $numErro = $stmt->errno;
+                                $stmt->close();
+                                $conn->close();
                                 throw new MySQLException($erro, $numErro);
                             }
                         }
@@ -165,6 +173,8 @@
                         // Falha na execução do PreparedStatement
                         $erro = $stmt->error;
                         $numErro = $stmt->errno;
+                        $stmt->close();
+                        $conn->close();
                         throw new MySQLException($erro, $numErro);
                     }
                     
@@ -173,15 +183,12 @@
                     // Falha ao criar o PreparedStatement
                     $erro = $conn->error;
                     $numErro = $conn->errno;
+                    $conn->close();
                     throw new MySQLException($erro, $numErro);
                 }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
-            }
-            finally {
-                $stmt->close();
-                $conn->close();
             }
         }
 
@@ -195,7 +202,7 @@
             $nomeColunasUsuario[3] . ", " .
             $nomeColunasUsuario[4] . ", " .
             $nomeColunasUsuario[5] . ")";
-            $query = "INSERT INTO $queryInto VALUES (?, ?, ?, ?)";
+            $query = "INSERT INTO $queryInto VALUES (?, ?, ?, ?, ?)";
 
             try {
                 $conn = getConexaoBancoMySQL();
@@ -203,26 +210,32 @@
                 
                 if($stmt) {
 
-                    $idTipo = $uVO->getIdTipoUsuario();
+                    $idTipo = 1;
                     $login = $uVO->getLogin();
                     $senha = $uVO->getSenha();
                     $nome = $uVO->getNome();
                     $email = $uVO->getEmail();
 
-                    if(empty($idTipo) || empty($login) || empty($senha) || empty($nome) || empty($email))
+                    if(empty($login) || empty($senha) || empty($nome) || empty($email))
                         // Valor não informado, retornar 'false'
+                        $stmt->close();
+                        $conn->close();
                         return false;
 
                     $stmt->bind_param("issss", $idTipo, $login, $senha, $nome, $email);
 
                     if($stmt->execute()){
                         // Executado com sucesso, retornar 'true'
+                        $stmt->close();
+                        $conn->close();
                         return true;
                     }
                     else {
                         // Falha na execução do PreparedStatement
                         $erro = $stmt->error;
                         $numErro = $stmt->errno;
+                        $stmt->close();
+                        $conn->close();
                         throw new MySQLException($erro, $numErro);
                     }
                     
@@ -231,15 +244,12 @@
                     // Falha ao criar o PreparedStatement
                     $erro = $conn->error;
                     $numErro = $conn->errno;
+                    $conn->close();
                     throw new MySQLException($erro, $numErro);
                 }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
-            }
-            finally {
-                $stmt->close();
-                $conn->close();
             }
         }
 
@@ -270,6 +280,8 @@
                             $arrayRetorno[] = $uVO;
                         }
 
+                        $stmt->close();
+                        $conn->close();
                         if(count($arrayRetorno) != 0) 
                             return $arrayRetorno;
                         else
@@ -280,6 +292,8 @@
                         // Falha na execução do PreparedStatement
                         $erro = $stmt->error;
                         $numErro = $stmt->errno;
+                        $stmt->close();
+                        $conn->close();
                         throw new MySQLException($erro, $numErro);
                     }
                     
@@ -288,15 +302,12 @@
                     // Falha ao criar o PreparedStatement
                     $erro = $conn->error;
                     $numErro = $conn->errno;
+                    $conn->close();
                     throw new MySQLException($erro, $numErro);
                 }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
-            }
-            finally {
-                $stmt->close();
-                $conn->close();
             }
         }
 
@@ -395,6 +406,8 @@
                                 $arrayRetorno[] = $uVO;
                             }
 
+                            $stmt->close();
+                            $conn->close();
                             if(count($arrayRetorno) != 0) 
                                 return $arrayRetorno;
                             else
@@ -405,6 +418,8 @@
                             // Falha na execução do PreparedStatement
                             $erro = $stmt->error;
                             $numErro = $stmt->errno;
+                            $stmt->close();
+                            $conn->close();
                             throw new MySQLException($erro, $numErro);
                         }
                         
@@ -413,15 +428,12 @@
                         // Falha ao criar o PreparedStatement
                         $erro = $conn->error;
                         $numErro = $conn->errno;
+                        $conn->close();
                         throw new MySQLException($erro, $numErro);
                     }
                 }
                 catch(MySQLException $sqle) {
                     throw $sqle;
-                }
-                finally {
-                    $stmt->close();
-                    $conn->close();
                 }
             }
         }
@@ -456,18 +468,24 @@
 
                     if(empty($id) || empty($idTipo) || empty($login) || empty($senha) || empty($nome) || empty($email))
                         // Valor não informado, retornar 'false'
+                        $stmt->close();
+                        $conn->close();
                         return false;
 
                     $stmt->bind_param("issssi", $idTipo, $login, $senha, $nome, $email, $id);
 
                     if($stmt->execute()){
                         // Executado com sucesso, retornar 'true'
+                        $stmt->close();
+                        $conn->close();
                         return true;
                     }
                     else {
                         // Falha na execução do PreparedStatement
                         $erro = $stmt->error;
                         $numErro = $stmt->errno;
+                        $stmt->close();
+                        $conn->close();
                         throw new MySQLException($erro, $numErro);
                     }
                     
@@ -476,15 +494,12 @@
                     // Falha ao criar o PreparedStatement
                     $erro = $conn->error;
                     $numErro = $conn->errno;
+                    $conn->close();
                     throw new MySQLException($erro, $numErro);
                 }
             }
             catch(MySQLException $sqle) {
                 throw $sqle;
-            }
-            finally {
-                $stmt->close();
-                $conn->close();
             }
         }
 
@@ -499,18 +514,24 @@
             if($stmt) {
                 if(empty($id))
                     // Valor não informado, retornar 'false'
+                    $stmt->close();
+                    $conn->close();
                     return false;
 
                 $stmt->bind_param("i", $id);
 
                 if($stmt->execute()){
                     // Executado com sucesso, retornar 'true'
+                    $stmt->close();
+                        $conn->close();
                     return true;
                 }
                 else {
                     // Falha na execução do PreparedStatement
                     $erro = $stmt->error;
                     $numErro = $stmt->errno;
+                    $stmt->close();
+                    $conn->close();
                     throw new MySQLException($erro, $numErro);
                 }
                 
@@ -519,6 +540,7 @@
                 // Falha ao criar o PreparedStatement
                 $erro = $conn->error;
                 $numErro = $conn->errno;
+                $conn->close();
                 throw new MySQLException($erro, $numErro);
             }
         }
@@ -591,14 +613,19 @@
 
         // Getter estático para 'servicosUsuario'
         public static function getServicosUsuario() : ServicosUsuario {
-            for ($i = 0; $i < 9; $i++) { 
-                if(empty(self::$SERVICOS_USUARIO))
+            // Garantia de inicialização da variável
+            if(!empty(self::$SERVICOS_USUARIO)) 
+                return self::$SERVICOS_USUARIO;
+            else {
+                for ($i = 0; $i < 9; $i++) { 
                     self::$SERVICOS_USUARIO = new ServicosUsuario();
-                else
-                    break;
-            }
+                    if(!empty(self::$SERVICOS_USUARIO))
+                        return self::$SERVICOS_USUARIO;
+                }
 
-            return self::$SERVICOS_USUARIO;
+                throw new RuntimeException("Exceção em FactoryServicos->getServicosUsuario(): Variável não inicializada.");
+            }
+                
         }
     }
 ?>
