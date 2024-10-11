@@ -38,8 +38,16 @@
     final class UsuarioVO extends ObjetoVO {
 
         // Atributos estáticos da classe
-        private static $nomeTabela;
-        private static $nomesColunasTabela;
+        private static $nomeTabela = "Usuario";
+        private static $nomesColunasTabela = [
+            "idUsuario",
+
+            "idTipoUsuario",
+            "loginUsuario",
+            "senhaUsuario",
+            "nomeUsuario",
+            "emailUsuario"
+        ];
 
         // Atributos do objeto
         private $idTipoUsuario;
@@ -71,10 +79,10 @@
         }
 
         // Getter estático para 'nomeTabela'
-        public static function getNomeTabela() {return self::$nomeTabela;}
+        public static function getNomeTabela() : String {return self::$nomeTabela;}
 
         // Getter estático para 'nomesColunasTabela'
-        public static function getNomesColunasTabela() {return self::$nomesColunasTabela;}
+        public static function getNomesColunasTabela() : array {return self::$nomesColunasTabela;}
 
         // Getter e Setter para 'idTipoUsuario'
         public function getIdTipoUsuario(): int | null {return $this->idTipoUsuario;}
@@ -85,7 +93,7 @@
         public function setLogin(string $login): void {$this->login = $login;}
 
         // Getter e Setter para 'senha'
-        // Recebe uma senha exposta e a salva como um hash criado a partir do algoritmo bcrypt
+        // Recebe uma senha "exposta" e a salva como um hash criado a partir do algoritmo bcrypt
         public function getSenha(): string | null {return $this->senha;}
         public function setSenha(string $senha): void {
             $hash = false;
@@ -216,15 +224,15 @@
                     $nome = $uVO->getNome();
                     $email = $uVO->getEmail();
 
-                    if(empty($login) || empty($senha) || empty($nome) || empty($email))
+                    if(empty($login) || empty($senha) || empty($nome) || empty($email)) {
                         // Valor não informado, retornar 'false'
                         $stmt->close();
                         $conn->close();
                         return false;
-
+                    }
                     $stmt->bind_param("issss", $idTipo, $login, $senha, $nome, $email);
 
-                    if($stmt->execute()){
+                    if($stmt->execute()) {
                         // Executado com sucesso, retornar 'true'
                         $stmt->close();
                         $conn->close();
