@@ -2,21 +2,11 @@
     require_once '../_internos/scripts.php';
     require_once '../_internos/interfaces.php';
     require_once '../_internos/classes.php';
-
-    if(!isSessaoAtiva()) {
-        echo"<script>
-                alert('Você não está logado!');
-            </script>";
-        header('Location:index.php');
-        exit();
-    }
+    session_start();
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<!-- Este arquivo é do tipo php ao invés de html para códigos da sessão --> 
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,7 +58,10 @@
 
     <main>
         <section id="inicio-sessao">
-            <h2>Olá, <?php echo htmlspecialchars($_SESSION[UsuarioVO::getNomesColunasTabela[4]]); ?>!</h2> <!-- Exibe o nome do usuário de acordo com dado da seção  -->
+            <h2>Olá,
+                <?php
+                echo htmlspecialchars($_SESSION['usuario']->getNome()); 
+                ?>!</h2> <!-- Exibe o nome do usuário de acordo com dado da sessão  -->
         </section>
 
         <section id="editar-usuario">
@@ -78,13 +71,13 @@
                 <form name="cadastro" action="../_internos/modificar_cadastro.php" method="post"> <!-- TODO: Depois configurar o back-end -->
                     <!-- htmlspecialchars para campos já estarem preenchidos com os dados da seção do usuário (exceto senha): -->
                     <label for="login">Login:</label>
-                    <input type="text" id="login" name="login" placeholder="usuario123" value="<?php echo htmlspecialchars($_SESSION[UsuarioVO::getNomesColunasTabela[2]]); ?>" required>
+                    <input type="text" id="login" name="login" placeholder="usuario123" value="<?php echo htmlspecialchars($_SESSION['usuario']->getLogin()); ?>" required>
                     <br>
                     <label for="nome">Nome Completo:</label>
-                    <input type="text" id="nome" name="nome" placeholder="José da Silva" value="<?php echo htmlspecialchars($_SESSION[UsuarioVO::getNomesColunasTabela[4]]); ?>">
+                    <input type="text" id="nome" name="nome" placeholder="José da Silva" value="<?php echo htmlspecialchars($_SESSION['usuario']->getNome()); ?>">
                     <br>
                     <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" placeholder="exemplo@email.com" value="<?php echo htmlspecialchars($_SESSION[UsuarioVO::getNomesColunasTabela[5]]); ?>">
+                    <input type="email" id="email" name="email" placeholder="exemplo@email.com" value="<?php echo htmlspecialchars($_SESSION['usuario']->getEmail()); ?>">
                     <br>
                     <label for="senhaAtual">Senha Atual:</label>
                     <input type="password" id="senhaAtual" name="senhaAtual" placeholder="Digite a sua senha atual" required>
