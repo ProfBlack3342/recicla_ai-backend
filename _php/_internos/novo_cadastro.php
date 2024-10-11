@@ -21,13 +21,23 @@
             $tentativaCadastro = FactoryServicos::getServicosUsuario()->cadastroUsuario($usuarioVO);
             if(empty($tentativaCadastro)) {
                 echo"<script>
-                        alert('Erro no cadastro!');
+                        alert('Erro no cadastro! Algum valor não foi registrado nos dados do usuário');
                         window.location.href = '../_publicos/index.php';
                     </script>";
             }
             else {
-                fazerLogin($login, $senha1);
-                session_start();
+                if(fazerLogin($login, $senha1)) {
+                    echo"<script>
+                        alert('Cadastro concluído com sucesso, fazendo login...);
+                        window.location.href = '../_publicos/sessao.php';
+                    </script>";
+                }
+                else {
+                    echo"<script>
+                        alert('Cadastro concluído com sucesso, mas houve um erro no login. Favor tentar novamente);
+                        window.location.href = '../_publicos/entrar.php';
+                    </script>";
+                }
             }
         }
         catch (MySQLException $sqle) {
