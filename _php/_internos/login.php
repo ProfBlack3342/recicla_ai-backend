@@ -7,15 +7,16 @@
     $senha = $_POST['senha'];
 
     if(fazerLogin($login, $senha)) {
+        
         echo"<script>
                     alert('Dados corretos, fazendo login...');
-                    window.location.href = '../sessao.php';
+                    window.location.href = '../_publicos/sessao.php';
                 </script>";
     }
     else {
         echo"<script>
                     alert('Usuário e/ou senha incorretos!');
-                    window.location.href = '../index.php';
+                    window.location.href = '../_publicos/entrar.php';
             </script>";
     }
 ?>
