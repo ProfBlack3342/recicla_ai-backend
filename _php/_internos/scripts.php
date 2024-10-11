@@ -22,6 +22,22 @@
     }
 
     /**
+     * Retorna se existe uma SESSION ativa
+     * @return bool
+     */
+    function isSessaoAtiva() : bool
+    {
+        if ( php_sapi_name() !== 'cli' ) {
+            if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+                return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+            } else {
+                return session_id() === '' ? FALSE : TRUE;
+            }
+        }
+        return FALSE;
+    }
+
+    /**
      * 
      */
     function fazerLogin(string $login, string $senha) : bool {
@@ -34,14 +50,11 @@
                 return false;
             }
             else {
-                session_start();
+                if(isSessaoAtiva())
+                    fazerLogoff();
 
-                $_SESSION[$nomesDados[0]] = $tentativaLogin->getId();
-                $_SESSION[$nomesDados[1]] = $tentativaLogin->getIdTipoUsuario();
-                $_SESSION[$nomesDados[2]] = $tentativaLogin->getLogin();
-                $_SESSION[$nomesDados[3]] = $tentativaLogin->getSenha();
-                $_SESSION[$nomesDados[4]] = $tentativaLogin->getNome();
-                $_SESSION[$nomesDados[5]] = $tentativaLogin->getEmail();
+                session_start();
+                $_SESSION['usuario'] = $tentativaLogin;
     
                 return true;
             }
@@ -69,19 +82,5 @@
         session_destroy();
     }
 
-    /**
-     * Retorna se existe uma SESSION ativa
-     * @return bool
-     */
-    function isSessaoAtiva() : bool
-    {
-        if ( php_sapi_name() !== 'cli' ) {
-            if ( version_compare(phpversion(), '5.4.0', '>=') ) {
-                return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
-            } else {
-                return session_id() === '' ? FALSE : TRUE;
-            }
-        }
-        return FALSE;
-    }
+    
 ?>
