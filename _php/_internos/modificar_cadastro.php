@@ -2,7 +2,6 @@
     require_once 'scripts.php';
     require_once 'interfaces.php';
     require_once 'classes.php';
-
     session_start();
 
     $login = $_POST['login'];
