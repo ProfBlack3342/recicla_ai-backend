@@ -6,12 +6,11 @@
 
     $login = $_POST['login'];
     $senhaAtual = $_POST['senhaAtual'];
-    $hash = $_SESSION['usuario']->getSenha();
-    $isSenhaAtualCorreta = password_verify($senhaAtual, $hash);
+    $usuario = $_SESSION['usuario'];
 
     if(isset($_POST['atualizar'])) {    // Atualiza usuário se o botão Atualizar for clicado
 
-        if($isSenhaAtualCorreta) {
+        if(password_verify($senhaAtual, $usuario->getSenha())) {
         
             $senhaNova1 = null;
             $senhaNova2 = null;
@@ -21,10 +20,10 @@
                 $senhaNova2 = array_key_exists('senhaNova1', $_POST) ? $_POST['senhaNova2'] : null;
 
                 if($senhaNova1 !== $senhaNova2) {
-                    echo"<script>
-                        alert('As senhas novas não são iguais entre si');
-                        window.location.href = '../_publicos/sessao.php';
-                    </script>";
+                    echo`<script>
+                            alert('As senhas novas não são iguais entre si');
+                            window.location.href = '../sessao.php';
+                        </script>`;
                     exit();
                 }
             }
@@ -50,65 +49,65 @@
             $tentativaEdicao = FactoryServicos::getServicosUsuario()->atualizarUsuario($usuarioVO);
     
             if(empty($tentativaEdicao)) {
-                echo"<script>
+                echo`<script>
                         alert('Erro na edição!');
-                        window.location.href = '../_publicos/sessao.php';
-                    </script>";
+                        window.location.href = '../sessao.php';
+                    </script>`;
                 exit();
             }
             else {
                 $_SESSION['usuario'] = $usuarioVO;
-                echo"<script>
+                echo`<script>
                         alert('Cadastro atualizado com sucesso!');
-                        window.location.href = '../_publicos/sessao.php';
-                    </script>";
+                        window.location.href = '../sessao.php';
+                    </script>`;
                 exit();
             }
         }
         else {
-            echo"<script>
+            echo`<script>
                     alert('Senha atual incorreta!');
-                    window.location.href = '../_publicos/sessao.php';
-                </script>";
+                    window.location.href = '../sessao.php';
+                </script>`;
             exit();
         }
     }
     elseif(isset($_POST['excluir'])) {  // Excluir usuário se o botão Excluir for clicado
 
-        if($isSenhaAtualCorreta) {
+        if(password_verify($senhaAtual, $usuario->getSenha())) {
 
             $tentativaRemocao = FactoryServicos::getServicosUsuario()->deletarUsuario($_SESSION['usuario']->getId());
     
             if(empty($tentativaRemocao)) {
-                echo"<script>
+                echo`<script>
                         alert('Erro na remoção!');
-                        window.location.href = '../_publicos/sessao.php';
-                    </script>";
+                        window.location.href = '../sessao.php';
+                    </script>`;
                 exit();
             }
             else {
                 fazerLogoff();
-                echo"<script>
+                echo`<script>
                         alert('Cadastro removido com sucesso! Faça login novamente...');
-                        window.location.href = '../_publicos/sessao.php';
-                    </script>";
+                        window.location.href = '../sessao.php';
+                    </script>`;
                 exit();
             }
         }
         else {
-            echo"<script>
+            echo`<script>
                     alert('Senha incorreta!');
-                    window.location.href = '../_publicos/sessao.php';
-                </script>";
+                    window.location.href = '../sessao.php';
+                </script>`;
             exit();
         }
     }
     elseif(isset($_POST['sairDaConta'])) {
         fazerLogoff();
-        echo"<script>
+        echo`<script>
                 alert('Saindo do usuário atual');
-                window.location.href = '../_publicos/sessao.php';
-            </script>";
+                window.location.href = '../sessao.php';
+            </script>`;
         exit();
     }
 ?>

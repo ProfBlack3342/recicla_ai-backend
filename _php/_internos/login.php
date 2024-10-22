@@ -8,15 +8,16 @@
 
     if(fazerLogin($login, $senha)) {
         
-        echo"<script>
-                    alert('Dados corretos, fazendo login...');
-                    window.location.href = '../_publicos/sessao.php';
-                </script>";
+        echo`<script>
+                alert('Dados corretos, fazendo login...');
+            </script>`;
+            header('Location:../sessao.php');
+            exit();
     }
     else {
-        echo"<script>
+        echo`<script>
                     alert('Usuário e/ou senha incorretos!');
-                    window.location.href = '../_publicos/entrar.php';
-            </script>";
+                    window.location.href = '../entrar.php';
+            </script>`;
     }
 ?>
