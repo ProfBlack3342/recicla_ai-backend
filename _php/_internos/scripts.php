@@ -3,14 +3,14 @@
 
     /**
      * Cria e retorna uma conexão com o banco de dados MySQL especificado na função
-     * @return mysqli - O objeto "mysqli" da conexão
+     * @return mysqli - O objeto "mysqli" da conexão especificada
      * @author Eduardo Pereira Moreira - eduardopereiramoreira1995+code@gmail.com
      */
     function getConexaoBancoMySQL() : mysqli {
         $servidor = "localhost";
         $usuario = "root";
         $senha = "";
-        $bancoDeDados = "recicla_ai";  // Modificado para testes
+        $bancoDeDados = "recicla_ai";
 
         $conn = new mysqli($servidor, $usuario, $senha, $bancoDeDados);
 
@@ -23,8 +23,9 @@
     }
 
     /**
-     * Retorna se existe uma SESSION ativa
-     * @return bool
+     * Retorna se existe uma sessão ativa
+     * @return bool - 'true' se houver uma sessão ativa, 'false' se não houver.
+     * @author https://www.php.net/manual/en/function.session-status.php#113468
      */
     function isSessaoAtiva() : bool
     {
@@ -39,11 +40,37 @@
     }
 
     /**
-     * 
+     * Destrói a sessão e os cookies para fazer logoff do usuário
+     * @author https://www.php.net/manual/pt_BR/function.session-destroy.php
+     */
+    function fazerLogoff() : void {
+        // Inicializa a sessão.
+        // Se estiver sendo usado session_name("something"), não esqueça de usá-lo agora!
+        session_start();
+        
+        // Apaga todas as variáveis da sessão
+        $_SESSION = array();
+
+        // Se é preciso matar a sessão, então os cookies de sessão também devem ser apagados.
+        // Nota: Isto destruirá a sessão, e não apenas os dados!
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+                $params["path"], $params["domain"],
+                $params["secure"], $params["httponly"]
+            );
+        }
+
+        session_destroy();
+    }
+
+    /**
+     * Tenta fazer login do usuário com os dados informados.
+     * @return bool - 'true' para sucesso, 'false' se falhar.
+     * @author Eduardo Pereira Moreira - eduardopereiramoreira1995+code@gmail.com
      */
     function fazerLogin(string $login, string $senha) : bool {
 
-        $nomesDados = UsuarioVO::getNomesColunasTabela();
         $tentativaLogin = FactoryServicos::getServicosUsuario()->loginUsuario($login, $senha);
 
         if(isset($tentativaLogin)) {
@@ -64,24 +91,4 @@
             return false;
         }
     }
-
-    /**
-     * Destrói a sessão e os cookies para fazer logoff do usuário
-     * @author Eduardo Pereira Moreira - eduardopereiramoreira1995+code@gmail.com
-     */
-    function fazerLogoff() : void {
-        $_SESSION = array();
-
-        if (ini_get("session.use_cookies")) {
-            $params = session_get_cookie_params();
-            setcookie(session_name(), '', time() - 42000,
-                $params["path"], $params["domain"],
-                $params["secure"], $params["httponly"]
-            );
-        }
-
-        session_destroy();
-    }
-
-    
 ?>
