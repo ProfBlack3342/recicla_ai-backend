@@ -10,6 +10,9 @@
         $senha1 = $_POST['senha1'];
         $senha2 = $_POST['senha2'];
 
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\');
+
         if($senha1 === $senha2) {
             $usuarioVO = new UsuarioVO();
             $usuarioVO->setIdTipoUsuario(1);
@@ -21,39 +24,28 @@
             try {
                 $tentativaCadastro = FactoryServicos::getServicosUsuario()->cadastroUsuario($usuarioVO);
                 if(empty($tentativaCadastro)) {
-                    echo`<script>
-                            alert('Erro no cadastro! Algum valor não foi registrado nos dados do usuário');
-                        </script>`;
-                    header('Location:../index.php');
-                    exit();
+                    header("Location: http://$host$uri/home.php", true);
+                    exit('Erro no cadastro! Algum valor não foi registrado nos dados do usuário');
                 }
                 else {
                     if(fazerLogin($login, $senha1)) {
-                        echo`<script>
-                            alert('Cadastro concluído com sucesso, fazendo login...);
-                            window.location.href = '../sessao.php';
-                        </script>`;
+                        header("Location: http://$host$uri/sessao.php", true);
+                        exit('Cadastro concluído com sucesso, fazendo login...');
                     }
                     else {
-                        echo`<script>
-                            alert('Cadastro concluído com sucesso, mas houve um erro no login. Favor tentar novamente);
-                            window.location.href = '../entrar.php';
-                        </script>`;
+                        header("Location: http://$host$uri/entrar.php", true);
+                        exit('Cadastro concluído com sucesso, mas houve um erro no login. Favor tentar novamente');
                     }
                 }
             }
             catch (MySQLException $sqle) {
-                echo`<script>
-                        alert('Exceção: ' . $sqle->getMessage());
-                        window.location.href = '../index.php';
-                    </script>`;
+                header("Location: http://$host$uri/home.php", true);
+                exit('Exceção: ' . $sqle->getMessage());
             }
         }
         else {
-            echo`<script>
-                    alert('As senhas não são iguais!');
-                    window.location.href = '../index.php';
-                </script>`;
+            header("Location: http://$host$uri/home.php", true);
+            exit('As senhas não são iguais!');
         }
     }
 ?>
