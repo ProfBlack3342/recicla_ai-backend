@@ -1,8 +1,19 @@
 <?php
     require_once '_internos/scripts.php';
     require_once '_internos/classes.php';
-    
+
     session_start();
+
+    if(!array_key_exists('usuario', $_SESSION) || !($_SESSION['usuario'] instanceof UsuarioVO)) {
+
+        fazerLogoff();
+
+        $host = $_SERVER['HTTP_HOST'];
+        $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+        header("Location: http://$host$uri/home.php", true, 401);
+
+        exit("Usuário não está logado, mudando para página inicial");
+    }
 ?>
 
 <!DOCTYPE html>
@@ -30,11 +41,11 @@
                 &#9776; <!-- Ícone de hamburguer -->
             </div>
             <ul>
-                <li><a href="index.php">Home</a></li>
-                <li><a href="o-que-e-descarte.html">O que é o Descarte Eletrônico</a></li>
-                <li><a href="por-que-descartar.html">Por que descartar corretamente?</a></li>
-                <li><a href="como-e-onde.html">Como e onde descartar</a></li>
-                <li><a href="sobre-nos.html">Sobre nós</a></li>
+                <li><a href="home.php">Home</a></li>
+                <li><a href="o-que-e-descarte.php">O que é o Descarte Eletrônico</a></li>
+                <li><a href="por-que-descartar.php">Por que descartar corretamente?</a></li>
+                <li><a href="como-e-onde.php">Como e onde descartar</a></li>
+                <li><a href="sobre-nos.php">Sobre nós</a></li>
                 <li><a href="#">Entrou</a></li>
             </ul>
         </div>
