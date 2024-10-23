@@ -2,15 +2,19 @@
     require_once 'scripts.php';
     require_once 'interfaces.php';
     require_once 'classes.php';
+
     session_start();
 
     $login = $_POST['login'];
     $senhaAtual = $_POST['senhaAtual'];
-    $usuario = $_SESSION['usuario'];
+    $hashAtual = $_SESSION['usuario']->getSenha();
+
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\');
 
     if(isset($_POST['atualizar'])) {    // Atualiza usuário se o botão Atualizar for clicado
 
-        if(password_verify($senhaAtual, $usuario->getSenha())) {
+        if(password_verify($senhaAtual, $hashAtual)) {
         
             $senhaNova1 = null;
             $senhaNova2 = null;
@@ -20,11 +24,8 @@
                 $senhaNova2 = array_key_exists('senhaNova1', $_POST) ? $_POST['senhaNova2'] : null;
 
                 if($senhaNova1 !== $senhaNova2) {
-                    echo`<script>
-                            alert('As senhas novas não são iguais entre si');
-                            window.location.href = '../sessao.php';
-                        </script>`;
-                    exit();
+                    header("Location: http://$host$uri/sessao.php", true);
+                    exit('As senhas novas não são iguais entre si');
                 }
             }
             else
@@ -49,65 +50,46 @@
             $tentativaEdicao = FactoryServicos::getServicosUsuario()->atualizarUsuario($usuarioVO);
     
             if(empty($tentativaEdicao)) {
-                echo`<script>
-                        alert('Erro na edição!');
-                        window.location.href = '../sessao.php';
-                    </script>`;
-                exit();
+                header("Location: http://$host$uri/sessao.php", true);
+                exit('Erro na edição!');
             }
             else {
                 $_SESSION['usuario'] = $usuarioVO;
-                echo`<script>
-                        alert('Cadastro atualizado com sucesso!');
-                        window.location.href = '../sessao.php';
-                    </script>`;
-                exit();
+                header("Location: http://$host$uri/entrar.php", true);
+                exit('Cadastro atualizado com sucesso, faça login novamente...');
             }
         }
         else {
-            echo`<script>
-                    alert('Senha atual incorreta!');
-                    window.location.href = '../sessao.php';
-                </script>`;
-            exit();
+            // Javascript para testes, substituir por um header quando finalizar
+            echo "<script> alert('Senha atual incorreta!'); </script>";
+            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
         }
     }
     elseif(isset($_POST['excluir'])) {  // Excluir usuário se o botão Excluir for clicado
 
-        if(password_verify($senhaAtual, $usuario->getSenha())) {
+        if(password_verify($senhaAtual, $hashAtual)) {
 
             $tentativaRemocao = FactoryServicos::getServicosUsuario()->deletarUsuario($_SESSION['usuario']->getId());
     
             if(empty($tentativaRemocao)) {
-                echo`<script>
-                        alert('Erro na remoção!');
-                        window.location.href = '../sessao.php';
-                    </script>`;
-                exit();
+                header("Location: http://$host$uri/sessao.php", true);
+                exit('Erro na remoção!');
             }
             else {
                 fazerLogoff();
-                echo`<script>
-                        alert('Cadastro removido com sucesso! Faça login novamente...');
-                        window.location.href = '../sessao.php';
-                    </script>`;
-                exit();
+                header("Location: http://$host$uri/home.php", true);
+                exit('Cadastro removido com sucesso!');
             }
         }
         else {
-            echo`<script>
-                    alert('Senha incorreta!');
-                    window.location.href = '../sessao.php';
-                </script>`;
-            exit();
+            // Javascript para testes, substituir por um header quando finalizar
+            echo "<script> alert('Senha atual incorreta!'); </script>";
+            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
         }
     }
     elseif(isset($_POST['sairDaConta'])) {
         fazerLogoff();
-        echo`<script>
-                alert('Saindo do usuário atual');
-                window.location.href = '../sessao.php';
-            </script>`;
-        exit();
+        header("Location: http://$host$uri/home.php", true);
+        exit('Saindo do usuário atual');
     }
 ?>
