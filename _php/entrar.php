@@ -2,14 +2,12 @@
     require_once '_internos/scripts.php';
     require_once '_internos/classes.php';
 
-    if(isSessaoAtiva()) {
-        echo`<script>
-                alert('Você já está logado, fazendo logoff!');
-            </script>`;
-        fazerLogoff();
-    }
-
     session_start();
+
+    if(array_key_exists('usuario', $_SESSION) && ($_SESSION('usuario') instanceof UsuarioVO)) {
+        fazerLogoff();
+        session_start();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -38,12 +36,12 @@
                 &#9776; <!-- Ícone de hamburguer -->
             </div>
             <ul>
-                <li><a href="index.php">Home</a></li>
-                <li><a href="o-que-e-descarte.html">O que é o Descarte Eletrônico</a></li>
-                <li><a href="por-que-descartar.html">Por que descartar corretamente?</a></li>
-                <li><a href="como-e-onde.html">Como e onde descartar</a></li>
-                <li><a href="sobre-nos.html">Sobre nós</a></li>
-                <li><a href="entrar.php">Entrar</a></li>
+                <li><a href="home.php">Home</a></li>
+                <li><a href="o-que-e-descarte.php">O que é o Descarte Eletrônico</a></li>
+                <li><a href="por-que-descartar.php">Por que descartar corretamente?</a></li>
+                <li><a href="como-e-onde.php">Como e onde descartar</a></li>
+                <li><a href="sobre-nos.php">Sobre nós</a></li>
+                <li><a href="#">Entrar</a></li>
             </ul>
         </div>
 
@@ -70,10 +68,10 @@
             <div class="form-container">
                 <form name="entrar" action="_internos/login.php" method="post">  <!-- TODO: Depois modificar o back-end se quiser -->
                     <label for="login">Login:</label>
-                    <input type="text" id="login" name="login" placeholder="usuario123" required>
+                    <input type="text" id="login" name="login" placeholder="Login" required>
                     <br>
                     <label for="senha">Senha:</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite a sua senha" required>
+                    <input type="password" id="senha" name="senha" placeholder="Senha" required>
                     <br>
                     <button type="submit" class="botao-sessao">Entrar</button>
                     <a href="trocar-senha.php">Esqueci a minha senha</a>
