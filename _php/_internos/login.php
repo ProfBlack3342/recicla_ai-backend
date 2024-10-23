@@ -6,18 +6,15 @@
     $login = $_POST['login'];
     $senha = $_POST['senha'];
 
+    $host = $_SERVER['HTTP_HOST'];
+    $uri = rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\');
+
     if(fazerLogin($login, $senha)) {
-        
-        echo`<script>
-                alert('Dados corretos, fazendo login...');
-            </script>`;
-            header('Location:../sessao.php');
-            exit();
+        header("Location: http://$host$uri/sessao.php", true);
+        exit('Dados corretos, fazendo login...');
     }
     else {
-        echo`<script>
-                    alert('Usuário e/ou senha incorretos!');
-                    window.location.href = '../entrar.php';
-            </script>`;
+        header("Location: http://$host$uri/home.php", true);
+        exit('Usuário e/ou senha incorretos!');
     }
 ?>
