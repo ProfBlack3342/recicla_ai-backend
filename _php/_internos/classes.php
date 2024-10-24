@@ -105,6 +105,8 @@
 
             $this->senha = $hash;
         }
+        // Setter para guardar um hash diretamente na 'senha'
+        public function setHash(string $hash) {$this->senha = $hash;}
 
         // Getter e Setter para 'nome'
         public function getNome(): string | null {return $this->nome;}
@@ -137,17 +139,17 @@
                     $stmt->bind_param("s", $login);
                     if($stmt->execute()){
 
-                        $stmt->bind_result($idUsuario, $idTipoUsuario, $loginUsuario, $senhaUsuario, $nomeUsuario, $emailUsuario);
+                        $stmt->bind_result($idUsuario, $idTipoUsuario, $loginUsuario, $hashSenhaUsuario, $nomeUsuario, $emailUsuario);
                         switch($stmt->fetch()){
                             case true: {
                                 // Usuário encontrado, verificar senha
-                                if(password_verify($senha, $senhaUsuario)) {
+                                if(password_verify($senha, $hashSenhaUsuario)) {
                                     // Senha correta
                                     $uVO = new UsuarioVO();
                                     $uVO->setId($idUsuario);
                                     $uVO->setIdTipoUsuario($idTipoUsuario);
                                     $uVO->setLogin($loginUsuario);
-                                    $uVO->setSenha($senhaUsuario);
+                                    $uVO->setHash($hashSenhaUsuario);
                                     $uVO->setNome($nomeUsuario);
                                     $uVO->setEmail($emailUsuario);
                                     $stmt->close();
