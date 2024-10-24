@@ -6,15 +6,19 @@
     session_start();
 
     $login = $_POST['login'];
-    $senhaAtual = $_POST['senhaAtual'];
-    $hashAtual = $_SESSION['usuario']->getSenha();
+    $senhaPost = $_POST['senhaAtual'];
+    $hash = $_SESSION['usuario']->getSenha();
 
     $host = $_SERVER['HTTP_HOST'];
     $uri = rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\');
 
+    // Javascript para testes
+    echo "<script> alert('Senha post: $senhaPost'); </script>";
+    echo "<script> alert('Hash: $hash'); </script>";
+
     if(isset($_POST['atualizar'])) {    // Atualiza usuário se o botão Atualizar for clicado
 
-        if(password_verify($senhaAtual, $hashAtual)) {
+        if(password_verify($senhaPost, $hash)) {
         
             $senhaNova1 = null;
             $senhaNova2 = null;
@@ -29,7 +33,7 @@
                 }
             }
             else
-                $senhaNova1 = $senhaAtual;
+                $senhaNova1 = $senhaPost;
 
             $nome = null;
             if(array_key_exists('nome', $_POST)) 
@@ -67,7 +71,7 @@
     }
     elseif(isset($_POST['excluir'])) {  // Excluir usuário se o botão Excluir for clicado
 
-        if(password_verify($senhaAtual, $hashAtual)) {
+        if(password_verify($senhaPost, $hash)) {
 
             $tentativaRemocao = FactoryServicos::getServicosUsuario()->deletarUsuario($_SESSION['usuario']->getId());
     
