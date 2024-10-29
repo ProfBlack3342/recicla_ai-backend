@@ -59,18 +59,6 @@
         // Construtor
         public function __construct() {
             parent::__construct();
-
-            self::$nomeTabela = "Usuario";
-            self::$nomesColunasTabela = [
-                "idUsuario",
-    
-                "idTipoUsuario",
-                "loginUsuario",
-                "senhaUsuario",
-                "nomeUsuario",
-                "emailUsuario"
-            ];
-
             $this->idTipoUsuario = null;
             $this->login = null;
             $this->senha = null;
@@ -453,13 +441,8 @@
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
             $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
 
-            $querySet = $nomeColunasUsuario[1] . " = ?," . 
-                        $nomeColunasUsuario[2] . " = ?," . 
-                        $nomeColunasUsuario[3] . " = ?," . 
-                        $nomeColunasUsuario[4] . " = ?," . 
-                        $nomeColunasUsuario[5] . " = ?";
-
-            $queryWhere = $nomeColunasUsuario[0] . " = ?";
+            $querySet = "$nomeColunasUsuario[1] = ?, $nomeColunasUsuario[2] = ?, $nomeColunasUsuario[3] = ?, $nomeColunasUsuario[4] = ?, $nomeColunasUsuario[5] = ?";
+            $queryWhere = "$nomeColunasUsuario[0] = ?";
 
             $query = "UPDATE $nomeTabelaUsuario SET $querySet WHERE $queryWhere";
 
@@ -533,7 +516,7 @@
                 if($stmt->execute()){
                     // Executado com sucesso, retornar 'true'
                     $stmt->close();
-                        $conn->close();
+                    $conn->close();
                     return true;
                 }
                 else {
