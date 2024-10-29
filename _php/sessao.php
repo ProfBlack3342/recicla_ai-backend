@@ -91,7 +91,7 @@
                     <input type="email" id="email" name="email" placeholder="exemplo@email.com" value="<?php echo htmlspecialchars($_SESSION['usuario']->getEmail()); ?>">
                     <br>
                     <label for="senhaAtual">Senha Atual:</label>
-                    <input type="password" id="senhaAtual" name="senhaAtual" placeholder="Digite a sua senha atual" required>
+                    <input type="password" id="senhaAtual" name="senhaAtual" placeholder="Digite a sua senha atual">
                     <br>
                     <label for="senhaNova1">Senha Nova:</label>
                     <input type="password" id="senhaNova1" name="senhaNova1" placeholder="Digite a sua senha nova">
