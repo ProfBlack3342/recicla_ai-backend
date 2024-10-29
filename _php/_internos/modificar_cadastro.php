@@ -5,95 +5,162 @@
 
     session_start();
 
-    $login = $_POST['login'];
-    $senhaPost = $_POST['senhaAtual'];
-    $hash = $_SESSION['usuario']->getSenha();
-
+    // Valores para redirecionamento da página com header()
     $host = $_SERVER['HTTP_HOST'];
     $uri = rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\');
 
-    // Javascript para testes
-    echo "<script> alert('Senha post: $senhaPost'); </script>";
-    echo "<script> alert('Hash: $hash'); </script>";
+    // Try/Catch para detectar exceções
+    try {
 
-    if(isset($_POST['atualizar'])) {    // Atualiza usuário se o botão Atualizar for clicado
+        // Verificar se o usuário somente deseja fazer logoff
+        if(isset($_POST['sairDaConta'])) {
+            fazerLogoff();
+            echo "<script> alert('Saindo do usuário atual'); </script>";
+            echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+            //header("Location: http://$host$uri/entrar.php", true);
+            //exit('Saindo do usuário atual');
+        }
+        else {
 
-        if(password_verify($senhaPost, $hash)) {
-        
-            $senhaNova1 = null;
-            $senhaNova2 = null;
-            if(array_key_exists('senhaNova1', $_POST)) {
+            // Login atual do usuário
+            $loginAtual = $_SESSION['usuario']->getLogin();
 
-                $senhaNova1 = $_POST['senhaNova1'];
-                $senhaNova2 = array_key_exists('senhaNova1', $_POST) ? $_POST['senhaNova2'] : null;
+            // Senha atual necessária para alterar/remover o usuário
+            if(array_key_exists('senhaAtual', $_POST) && isset($_POST['senhaAtual']))
+                $senhaPost = $_POST['senhaAtual'];
+            else
+                $senhaPost = null;
 
-                if($senhaNova1 !== $senhaNova2) {
-                    header("Location: http://$host$uri/sessao.php", true);
-                    exit('As senhas novas não são iguais entre si');
+            echo "<script> alert('senhaPost = $senhaPost'); </script>";
+
+            // Verificar se o usuário digitou a senha atual
+            if(isset($senhaPost)) {
+
+                // Verificar novamente se os dados correspondem com os do banco de dados, senão uma edição local dos dados da sessão seria suficiente para alterar/remover qualquer usuário
+                if(fazerLogin($loginAtual, $senhaPost)) {
+
+                    // Login confirmado, verificar se estamos atualizando ou removendo o usuário
+                    if(isset($_POST['atualizar'])) {        // Atualizando
+
+                        // Verificar se o usuário deseja alterar o login ou manter o atual
+                        if(array_key_exists('login', $_POST) && isset($_POST['login']))
+                            $loginNovo = $_POST['login'];
+                        else
+                            $loginNovo = $loginAtual;
+
+                        // Verificar se o usuário deseja alterar seu nome ou manter o atual
+                        if(array_key_exists('nome', $_POST) && isset($_POST['nome']))
+                            $nomeNovo = $_POST['nome'];
+                        else
+                            $nomeNovo = $_SESSION['usuario']->getNome();
+
+                        // Verificar se o usuário dseja alterar seu email ou manter o atual
+                        if(array_key_exists('email', $_POST) && isset($_POST['email']))
+                            $emailNovo = $_POST['email'];
+                        else
+                            $emailNovo = $_SESSION['usuario']->getEmail();
+
+                        // Verificar se o usuário deseja alterar a senha ou manter a atual
+                        $senhaNova1 = null;
+                        if(array_key_exists('senhaNova1', $_POST) && isset($_POST['senhaNova1'])) {
+
+                            // Senha nova foi digitada pelo usuário, guardar seu valor
+                            $senhaNova1 = $_POST['senhaNova1'];
+
+                            // Verificar se a confirmação da senha nova foi preenchida
+                            if(array_key_exists('senhaNova2', $_POST) && isset($_POST['senhaNova2']))
+                                $senhaNova2 = $_POST['senhaNova2'];
+                            else
+                                $senhaNova2 = null;
+            
+                            // Verificar se a senha nova e a confirmação de senha são iguais entre si
+                            if($senhaNova1 !== $senhaNova2) {
+
+                                // Se não forem, recarregar a página e não fazer mais nada
+                                echo "<script> alert('As senhas novas não são iguais entre si'); </script>";
+                                echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+                                //header("Location: http://$host$uri/entrar.php", true);
+                                //exit('As senhas novas não são iguais entre si');
+                            }
+                        }
+                        else {
+                            // Usuário não deseja alterar a senha
+                            $senhaNova1 = $senhaPost;
+                        }
+
+                        $id = $_SESSION['usuario']->getId();
+                        $idTipo = $_SESSION['usuario']->getIdTipoUsuario();
+                        
+                        $usuarioAtualizado = new UsuarioVO();
+                        $usuarioAtualizado->setId($id);
+                        $usuarioAtualizado->setIdTipoUsuario($idTipo);
+                        $usuarioAtualizado->setLogin($loginNovo);
+                        $usuarioAtualizado->setSenha($senhaNova1);
+                        $usuarioAtualizado->setNome($nomeNovo);
+                        $usuarioAtualizado->setEmail($emailNovo);
+                
+                        echo "<script> alert('$id | $idTipo | $loginNovo | $senhaNova1 | $nomeNovo | $emailNovo'); </script>";
+
+                        $tentativaEdicao = FactoryServicos::getServicosUsuario()->atualizarUsuario($usuarioAtualizado);
+
+                        if($tentativaEdicao) {
+
+                            // Sucesso! Encerrar a sessão, apagar os dados e redirecionar para a página de login
+                            $_SESSION['usuario'] = null;
+                            fazerLogoff();
+                            echo "<script> alert('Usuário atualizado com sucesso, faça login novamente...'); </script>";
+                            echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+                            //header("Location: http://$host$uri/entrar.php", true);
+                            //exit('Usuário atualizado com sucesso, faça login novamente...');
+                        }
+                        else {
+                            // Falha. Algum ou todos os atributos do usuário enviado a função de update tem valor nulo
+                            echo "<script> alert('Algum valor não foi informado!'); </script>";
+                            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                            //header("Location: http://$host$uri/home.php", true);
+                            //exit('Algum valor não foi informado!');
+                        }
+                    }
+                    elseif(isset($_POST['excluir'])) {      // Removendo
+                        $tentativaRemocao = FactoryServicos::getServicosUsuario()->deletarUsuario($_SESSION['usuario']->getId());
+    
+                        if($tentativaRemocao) {
+                            // Sucesso. Encerrar a sessão, apagar os dados e redirecionar para a página inicial
+                            fazerLogoff();
+                            echo "<script> alert('Cadastro removido com sucesso!'); </script>";
+                            echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+                            //header("Location: http://$host$uri/home.php", true);
+                            //exit('Cadastro removido com sucesso!');
+                        }
+                        else {
+                            // De alguma forma, o ID do usuário não foi informado. Provável valor nulo para $_SESSION['usuario']
+                            header("Location: http://$host$uri/sessao.php", true);
+                            exit('Erro na remoção, o ID não está presente na sessão!');
+                        }
+                    }
+                }
+                else {
+                    // Usuário digitou uma senha atual errada/inválida
+                    echo "<script> alert('A senha atual digitada está incorreta!'); </script>";
+                    echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                    //header("Location: http://$host$uri/sessao.php", true);
+                    //exit("A senha atual digitada está incorreta!");
                 }
             }
-            else
-                $senhaNova1 = $senhaPost;
-
-            $nome = null;
-            if(array_key_exists('nome', $_POST)) 
-                $nome = $_POST['nome'];
-            
-
-            $email = null;
-            if(array_key_exists('email', $_POST)) 
-                $email = $_POST['email'];
-            
-
-            $usuarioVO = new UsuarioVO();
-            $usuarioVO->setIdTipoUsuario(1);
-            $usuarioVO->setLogin($login);
-            $usuarioVO->setSenha($senhaNova1);
-            $usuarioVO->setNome($nome);
-            $usuarioVO->setEmail($email);
-            $tentativaEdicao = FactoryServicos::getServicosUsuario()->atualizarUsuario($usuarioVO);
-    
-            if(empty($tentativaEdicao)) {
-                header("Location: http://$host$uri/sessao.php", true);
-                exit('Erro na edição!');
-            }
             else {
-                $_SESSION['usuario'] = $usuarioVO;
-                header("Location: http://$host$uri/entrar.php", true);
-                exit('Cadastro atualizado com sucesso, faça login novamente...');
+                // Usuário não digitou a senha atual
+                echo "<script> alert('Digite a senha atual para atualizar ou excluir este usuário!'); </script>";
+                echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                //header("Location: http://$host$uri/sessao.php", true);
+                //exit("Digite a senha atual para atualizar ou excluir este usuário!");
             }
-        }
-        else {
-            // Javascript para testes, substituir por um header quando finalizar
-            echo "<script> alert('Senha atual incorreta!'); </script>";
-            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
         }
     }
-    elseif(isset($_POST['excluir'])) {  // Excluir usuário se o botão Excluir for clicado
-
-        if(password_verify($senhaPost, $hash)) {
-
-            $tentativaRemocao = FactoryServicos::getServicosUsuario()->deletarUsuario($_SESSION['usuario']->getId());
-    
-            if(empty($tentativaRemocao)) {
-                header("Location: http://$host$uri/sessao.php", true);
-                exit('Erro na remoção!');
-            }
-            else {
-                fazerLogoff();
-                header("Location: http://$host$uri/home.php", true);
-                exit('Cadastro removido com sucesso!');
-            }
-        }
-        else {
-            // Javascript para testes, substituir por um header quando finalizar
-            echo "<script> alert('Senha atual incorreta!'); </script>";
-            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
-        }
-    }
-    elseif(isset($_POST['sairDaConta'])) {
-        fazerLogoff();
-        header("Location: http://$host$uri/home.php", true);
-        exit('Saindo do usuário atual');
+    catch(MySQLException $sqle) {
+        $stringException = 'Exceção encontrada durante a edição: ' . $sqle->getMessage();
+        echo "<script> alert('$stringException'); </script>";
+        echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+        //header("Location: http://$host$uri/sessao.php", true);
+        //exit("$stringException");
     }
 ?>
