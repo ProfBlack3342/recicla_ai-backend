@@ -46,6 +46,7 @@
     function fazerLogoff() : void {
         // Inicializa a sessão.
         // Se estiver sendo usado session_name("something"), não esqueça de usá-lo agora!
+        if(!isSessaoAtiva())
         session_start();
         
         // Apaga todas as variáveis da sessão
@@ -71,24 +72,33 @@
      */
     function fazerLogin(string $login, string $senha) : bool {
 
-        $tentativaLogin = FactoryServicos::getServicosUsuario()->loginUsuario($login, $senha);
+        try {
+            $tentativaLogin = FactoryServicos::getServicosUsuario()->loginUsuario($login, $senha);
 
-        if(isset($tentativaLogin)) {
-            if(!$tentativaLogin) {
-                return false;
+            if(isset($tentativaLogin)) {
+                if(!$tentativaLogin) {
+                    // Login encontrado, senha incorreta
+                    return false;
+                }
+                else {
+                    // Login e Senha corretos
+                    if(isSessaoAtiva())
+                        fazerLogoff();
+
+                    session_start();
+                    $_SESSION['usuario'] = $tentativaLogin;
+        
+                    return true;
+                }
             }
             else {
-                if(isSessaoAtiva())
-                    fazerLogoff();
-
-                session_start();
-                $_SESSION['usuario'] = $tentativaLogin;
-    
-                return true;
+                // Usuário não encontrado
+                return false;
             }
         }
-        else {
-            return false;
+        catch(MySQLException $sqle) {
+            // Exceção durante o acesso no banco
+            throw $sqle;
         }
     }
 ?>
