@@ -312,7 +312,7 @@
         private function buildQueryWhere(UsuarioVO $uVO) : string | null {
 
             $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
-            $quantColunasUsuario - count($nomeColunasUsuario);
+            $quantColunasUsuario = count($nomeColunasUsuario);
             $flag = false;
             $stringRetorno = "";
 
@@ -459,11 +459,12 @@
                     $nome = $uVO->getNome();
                     $email = $uVO->getEmail();
 
-                    if(empty($id) || empty($idTipo) || empty($login) || empty($senha) || empty($nome) || empty($email))
+                    if(empty($id) || empty($idTipo) || empty($login) || empty($senha) || empty($nome) || empty($email)) {
                         // Valor não informado, retornar 'false'
                         $stmt->close();
                         $conn->close();
                         return false;
+                    }
 
                     $stmt->bind_param("issssi", $idTipo, $login, $senha, $nome, $email, $id);
 
@@ -502,39 +503,47 @@
             $nomeColunaIdUsuario = UsuarioVO::getNomesColunasTabela()[0];
 
             $query = "DELETE FROM $nomeTabelaUsuario WHERE $nomeColunaIdUsuario = ?";
-            $stmt = $conn->prepare($query);
-                
-            if($stmt) {
-                if(empty($id))
-                    // Valor não informado, retornar 'false'
-                    $stmt->close();
-                    $conn->close();
-                    return false;
 
-                $stmt->bind_param("i", $id);
+            try {
+                $conn = getConexaoBancoMySQL();
+                $stmt = $conn->prepare($query);
+                    
+                if($stmt) {
+                    if(empty($id)) {
+                        // Valor não informado, retornar 'false'
+                        $stmt->close();
+                        $conn->close();
+                        return false;
+                    }
 
-                if($stmt->execute()){
-                    // Executado com sucesso, retornar 'true'
-                    $stmt->close();
-                    $conn->close();
-                    return true;
+                    $stmt->bind_param("i", $id);
+
+                    if($stmt->execute()){
+                        // Executado com sucesso, retornar 'true'
+                        $stmt->close();
+                        $conn->close();
+                        return true;
+                    }
+                    else {
+                        // Falha na execução do PreparedStatement
+                        $erro = $stmt->error;
+                        $numErro = $stmt->errno;
+                        $stmt->close();
+                        $conn->close();
+                        throw new MySQLException($erro, $numErro);
+                    }
+                    
                 }
                 else {
-                    // Falha na execução do PreparedStatement
-                    $erro = $stmt->error;
-                    $numErro = $stmt->errno;
-                    $stmt->close();
+                    // Falha ao criar o PreparedStatement
+                    $erro = $conn->error;
+                    $numErro = $conn->errno;
                     $conn->close();
                     throw new MySQLException($erro, $numErro);
                 }
-                
             }
-            else {
-                // Falha ao criar o PreparedStatement
-                $erro = $conn->error;
-                $numErro = $conn->errno;
-                $conn->close();
-                throw new MySQLException($erro, $numErro);
+            catch(MySQLException $sqle) {
+                throw $sqle;
             }
         }
     }
