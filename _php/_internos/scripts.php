@@ -15,7 +15,7 @@
         $conn = new mysqli($servidor, $usuario, $senha, $bancoDeDados);
 
         if($conn->connect_error) {
-            exit("Falha na conexão: $con->connect_error");
+            exit("Falha na conexão: $conn->connect_error");
         }
         // echo "Sucesso na conexão com o banco de dados";
         // Removido para não aparecer na hora que vai para a página se sessão
