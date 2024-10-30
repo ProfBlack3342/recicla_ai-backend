@@ -26,7 +26,7 @@
     }
 
     /**
-     * Um objeto que contém os dados necessários para a tabela 'Usuario' no banco de dados.
+     * Um objeto que contém os dados necessários para a tabela 'usuario' no banco de dados.
      * Estes dados são os dados de "ObjetoVO", mais:
      * - ID do Tipo de Usuário (INT)
      * - Login VARCHAR(50)
@@ -38,7 +38,7 @@
     final class UsuarioVO extends ObjetoVO {
 
         // Atributos estáticos da classe
-        private static $nomeTabela = "Usuario";
+        private static $nomeTabela = "usuario";
         private static $nomesColunasTabela = [
             "idUsuario",
 
