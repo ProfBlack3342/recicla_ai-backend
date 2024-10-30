@@ -143,4 +143,8 @@
         echo "<script> alert('Exceção: $stringException'); </script>";
         echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
     }
+    catch (RuntimeException $rte) {
+        echo "<script> alert('Exceção: $stringException'); </script>";
+        echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+    }
 ?>
