@@ -4,7 +4,7 @@
 
     session_start();
 
-    if(array_key_exists('usuario', $_SESSION)) {
+    if(array_key_exists('usuario', $_SESSION) && ($_SESSION('usuario') instanceof UsuarioVO)) {
 
         $host = $_SERVER['HTTP_HOST'];
         $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
