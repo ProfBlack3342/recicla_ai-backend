@@ -100,5 +100,9 @@
             // Exceção durante o acesso no banco
             throw $sqle;
         }
+        catch (RuntimeException $rte) {
+            // Exceção durante o acesso aos serviços do usuário
+            throw $rte;
+        }
     }
 ?>
