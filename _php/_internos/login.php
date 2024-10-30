@@ -11,18 +11,18 @@
 
     try {
         if(fazerLogin($login, $senha)) {
-            header("Location: http://$host$uri/sessao.php", true);
-            exit('Dados corretos, fazendo login...');
+            echo "<script> alert('Dados corretos, fazendo login...'); </script>";
+            echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
         }
         else {
-            header("Location: http://$host$uri/home.php", true);
-            exit('Usuário e/ou senha incorretos!');
+            echo "<script> alert('Usuário e/ou senha incorretos!'); </script>";
+            echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
         }
     }
     catch(MySQLException $sqle) {
         $stringEx = 'Exceção encontrada: ' . $sqle->getMessage();
         echo "<script> alert('$stringEx'); </script>";
-        echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+        echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
     }
     
 ?>
