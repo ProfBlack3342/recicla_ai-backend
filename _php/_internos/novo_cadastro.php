@@ -42,6 +42,10 @@
                 echo "<script> alert('Exceção: $stringException'); </script>";
                 echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
             }
+            catch (RuntimeException $rte) {
+                echo "<script> alert('Exceção: $stringException'); </script>";
+                echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+            }
         }
         else {
             echo "<script> alert('As senhas não são iguais!'); </script>";
