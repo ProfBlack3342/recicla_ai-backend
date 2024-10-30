@@ -15,10 +15,10 @@
         $conn = new mysqli($servidor, $usuario, $senha, $bancoDeDados);
 
         if($conn->connect_error) {
+            echo "<script> alert('Falha na conexão: $conn->connect_error'); </script>";
             exit("Falha na conexão: $conn->connect_error");
         }
-        // echo "Sucesso na conexão com o banco de dados";
-        // Removido para não aparecer na hora que vai para a página se sessão
+
         return $conn;
     }
 
@@ -46,7 +46,7 @@
     function fazerLogoff() : void {
         // Inicializa a sessão.
         // Se estiver sendo usado session_name("something"), não esqueça de usá-lo agora!
-        if(!isSessaoAtiva())
+        if(!isSessaoAtiva())    // Adicionei uma verificação para sessão já ativa - Eduardo Pereira Moreira
         session_start();
         
         // Apaga todas as variáveis da sessão
