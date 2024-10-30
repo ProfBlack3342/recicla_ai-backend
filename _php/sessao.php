@@ -10,7 +10,7 @@
 
         $host = $_SERVER['HTTP_HOST'];
         $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        header("Location: http://$host$uri/home.php", true, 401);
+        header("Location: http://$host$uri/home.php", true);
         exit("Usuário não está logado, volte para a página inicial");
     }
 ?>
