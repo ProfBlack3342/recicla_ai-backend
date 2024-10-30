@@ -194,12 +194,7 @@
 
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
             $nomeColunasUsuario = UsuarioVO::getNomesColunasTabela();
-            $queryInto = $nomeTabelaUsuario . "(" .
-            $nomeColunasUsuario[1] . ", " .
-            $nomeColunasUsuario[2] . ", " .
-            $nomeColunasUsuario[3] . ", " .
-            $nomeColunasUsuario[4] . ", " .
-            $nomeColunasUsuario[5] . ")";
+            $queryInto = "$nomeTabelaUsuario ($nomeColunasUsuario[1], $nomeColunasUsuario[2], $nomeColunasUsuario[3], $nomeColunasUsuario[4], $nomeColunasUsuario[5])";
             $query = "INSERT INTO $queryInto VALUES (?, ?, ?, ?, ?)";
 
             try {
@@ -317,8 +312,8 @@
             $stringRetorno = "";
 
             for ($i = 0; $i < $quantColunasUsuario; $i++) { 
-                $dado = null;
 
+                $dado;
                 switch($i) {
                     case 0: {
                         // ID
@@ -373,7 +368,6 @@
             $nomeTabelaUsuario = UsuarioVO::getNomeTabela();
             $queryWhere = $this->buildQueryWhere($uVO);
             if(empty($queryWhere)) {
-
                 // Nenhum dado informado como filtro, listar todos os usuários
                 return $this->selectAll();
             }
