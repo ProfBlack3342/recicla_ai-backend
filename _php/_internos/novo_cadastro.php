@@ -24,28 +24,28 @@
             try {
                 $tentativaCadastro = FactoryServicos::getServicosUsuario()->cadastroUsuario($usuarioVO);
                 if(empty($tentativaCadastro)) {
-                    header("Location: http://$host$uri/home.php", true);
-                    exit('Erro no cadastro! Algum valor não foi registrado nos dados do usuário');
+                    echo "<script> alert('Erro no cadastro! Algum valor não foi registrado nos dados do usuário'); </script>";
+                    echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
                 }
                 else {
                     if(fazerLogin($login, $senha1)) {
-                        header("Location: http://$host$uri/sessao.php", true);
-                        exit('Cadastro concluído com sucesso, fazendo login...');
+                        echo "<script> alert('Cadastro concluído com sucesso, fazendo login...'); </script>";
+                        echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
                     }
                     else {
-                        header("Location: http://$host$uri/entrar.php", true);
-                        exit('Cadastro concluído com sucesso, mas houve um erro no login. Favor tentar novamente');
+                        echo "<script> alert('Cadastro concluído com sucesso, mas houve um erro no login. Favor tentar novamente'); </script>";
+                        echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
                     }
                 }
             }
             catch (MySQLException $sqle) {
-                header("Location: http://$host$uri/home.php", true);
-                exit('Exceção: ' . $sqle->getMessage());
+                echo "<script> alert('Exceção: $stringException'); </script>";
+                echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
             }
         }
         else {
-            header("Location: http://$host$uri/home.php", true);
-            exit('As senhas não são iguais!');
+            echo "<script> alert('As senhas não são iguais!'); </script>";
+            echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
         }
     }
 ?>
