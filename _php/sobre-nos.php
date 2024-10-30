@@ -1,6 +1,6 @@
 <?php
-  require_once 'scripts.php';
-  require_once 'classes.php';
+  require_once '_internos/scripts.php';
+  require_once '_internos/classes.php';
 
   session_start();
 ?>
