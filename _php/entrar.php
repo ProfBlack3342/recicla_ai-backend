@@ -4,7 +4,7 @@
 
     session_start();
 
-    if(array_key_exists('usuario', $_SESSION) && ($_SESSION('usuario') instanceof UsuarioVO)) {
+    if(array_key_exists('usuario', $_SESSION) && ($_SESSION['usuario'] instanceof UsuarioVO)) {
         fazerLogoff();
         session_start();
     }
