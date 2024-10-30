@@ -561,36 +561,48 @@
          * @param string $login - Login digitado no site
          * @param string $senha - Senha digitada no site
          */
-        public function loginUsuario(string $login, string $senha) : UsuarioVO | bool | null {return $this->interfaceUsuarioDAO->login($login, $senha);}
+        public function loginUsuario(string $login, string $senha) : UsuarioVO | bool | null {
+            return $this->interfaceUsuarioDAO->login($login, $senha);
+        }
 
         /**
          * Chama a função 'insert' em 'interfaceUsuarioDAO'
          * @param UsuarioVO $uVO - Objeto com todos os dados do usuário para registro
          */
-        public function cadastroUsuario(UsuarioVO $uVO) : bool {return $this->interfaceUsuarioDAO->insert($uVO);}
+        public function cadastroUsuario(UsuarioVO $uVO) : bool {
+            return $this->interfaceUsuarioDAO->insert($uVO);
+        }
 
         /**
          * Chama a função 'selectAll' em 'interfaceUsuarioDAO'
          */
-        public function listarUsuarios() : array | null {return $this->interfaceUsuarioDAO->selectAll();}
+        public function listarUsuarios() : array | null {
+            return $this->interfaceUsuarioDAO->selectAll();
+        }
 
         /**
          * Chama a função 'selectWhere' em 'interfaceUsuarioDAO'
          * @param UsuarioVO $uVO - Objeto com todos os dados de filtragem de usuário para pesquisa
          */
-        public function pesquisarUsuario(UsuarioVO $uVO) : array | null {return $this->interfaceUsuarioDAO->selectWhere($uVO);}
+        public function pesquisarUsuario(UsuarioVO $uVO) : array | null {
+            return $this->interfaceUsuarioDAO->selectWhere($uVO);
+        }
 
         /**
          * Chama a função 'update' em 'interfaceUsuarioDAO'
          * @param UsuarioVO $uVO - Objeto com todos os dados do usuário para atualização
          */
-        public function atualizarUsuario(UsuarioVO $uVO) : bool {return $this->interfaceUsuarioDAO->update($uVO);}
+        public function atualizarUsuario(UsuarioVO $uVO) : bool {
+            return $this->interfaceUsuarioDAO->update($uVO);
+        }
 
         /**
          * Chama a função 'delete' em 'interfaceUsuarioDAO'
          * @param int $id - ID do usuário que será removido do banco de dados
          */
-        public function deletarUsuario(int $id) : bool {return $this->interfaceUsuarioDAO->delete($id);}
+        public function deletarUsuario(int $id) : bool {
+            return $this->interfaceUsuarioDAO->delete($id);
+        }
     }
 
     /**
@@ -610,7 +622,7 @@
         // Getter estático para 'servicosUsuario'
         public static function getServicosUsuario() : ServicosUsuario {
             // Garantia de inicialização da variável
-            if(!empty(self::$SERVICOS_USUARIO)) 
+            if(isset(self::$SERVICOS_USUARIO)) 
                 return self::$SERVICOS_USUARIO;
             else {
                 for ($i = 0; $i < 9; $i++) { 
