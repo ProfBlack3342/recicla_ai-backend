@@ -21,7 +21,7 @@
     }
     catch(MySQLException $sqle) {
         $stringEx = 'Exceção encontrada: ' . $sqle->getMessage();
-        echo "<script> alert('$stringEx'); </script>";
+        echo "<script> alert('Exceção: $stringEx'); </script>";
         echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
     }
     
