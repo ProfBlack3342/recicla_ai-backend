@@ -140,7 +140,7 @@
     }
     catch(MySQLException $sqle) {
         $stringException = 'Exceção encontrada durante a edição: ' . $sqle->getMessage();
-        echo "<script> alert('$stringException'); </script>";
+        echo "<script> alert('Exceção: $stringException'); </script>";
         echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
     }
 ?>
