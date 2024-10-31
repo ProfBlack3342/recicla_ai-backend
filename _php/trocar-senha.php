@@ -10,9 +10,9 @@
 
         $host = $_SERVER['HTTP_HOST'];
         $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
-        header("Location: http://$host$uri/home", true);
+        header("Location: http://$host$uri/sessao.php", true);
 
-        exit("Usuário não está logado, mudando para página inicial");
+        exit("Usuário já está logado, mudando para página de sessão");
     }
 ?>
 
