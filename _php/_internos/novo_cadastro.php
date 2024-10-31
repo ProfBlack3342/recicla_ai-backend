@@ -2,6 +2,7 @@
     require_once 'scripts.php';
     require_once 'classes.php';
 
+    
     if(isset($_POST['cadastrar'])) {
         
         $login = $_POST['login'];

@@ -3,6 +3,7 @@
     require_once 'interfaces.php';
     require_once 'classes.php';
 
+    
     session_start();
 
     // Valores para redirecionamento da página com header()
