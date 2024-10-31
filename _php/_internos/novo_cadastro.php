@@ -2,7 +2,7 @@
     require_once 'scripts.php';
     require_once 'classes.php';
 
-    
+
     if(isset($_POST['cadastrar'])) {
         
         $login = $_POST['login'];
@@ -26,31 +26,31 @@
                 $tentativaCadastro = FactoryServicos::getServicosUsuario()->cadastroUsuario($usuarioVO);
                 if(empty($tentativaCadastro)) {
                     echo "<script> alert('Erro no cadastro! Algum valor não foi registrado nos dados do usuário'); </script>";
-                    echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+                    echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
                 }
                 else {
                     if(fazerLogin($login, $senha1)) {
                         echo "<script> alert('Cadastro concluído com sucesso, fazendo login...'); </script>";
-                        echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                        echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
                     }
                     else {
                         echo "<script> alert('Cadastro concluído com sucesso, mas houve um erro no login. Favor tentar novamente'); </script>";
-                        echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+                        echo "<script> window.location.href = 'https://$host$uri/entrar.php'; </script>";
                     }
                 }
             }
             catch (MySQLException $sqle) {
                 echo "<script> alert('Exceção: $stringException'); </script>";
-                echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+                echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
             }
             catch (RuntimeException $rte) {
                 echo "<script> alert('Exceção: $stringException'); </script>";
-                echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+                echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
             }
         }
         else {
             echo "<script> alert('As senhas não são iguais!'); </script>";
-            echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+            echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
         }
     }
 ?>
