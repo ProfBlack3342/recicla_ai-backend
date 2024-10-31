@@ -2,14 +2,15 @@
     require_once '_internos/scripts.php';
     require_once '_internos/classes.php';
 
+    
     session_start();
 
     if(!array_key_exists('usuario', $_SESSION) || !($_SESSION['usuario'] instanceof UsuarioVO)) {
-
         fazerLogoff();
 
         $host = $_SERVER['HTTP_HOST'];
         $uri = rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
+
         header("Location: http://$host$uri/home.php", true);
         exit("Usuário não está logado, volte para a página inicial");
     }
