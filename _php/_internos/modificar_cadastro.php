@@ -3,7 +3,7 @@
     require_once 'interfaces.php';
     require_once 'classes.php';
 
-    
+
     session_start();
 
     // Valores para redirecionamento da página com header()
@@ -17,7 +17,7 @@
         if(isset($_POST['sairDaConta'])) {
             fazerLogoff();
             echo "<script> alert('Saindo do usuário atual'); </script>";
-            echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+            echo "<script> window.location.href = 'https://$host$uri/entrar.php'; </script>";
         }
         else {
 
@@ -78,7 +78,7 @@
                             // Verificar se a senha nova e a confirmação de senha são iguais entre si
                             if($senhaNova1 !== $senhaNova2) {
                                 echo "<script> alert('As senhas novas não são iguais entre si'); </script>";
-                                echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+                                echo "<script> window.location.href = 'https://$host$uri/entrar.php'; </script>";
                             }
                         }
                         else {
@@ -102,12 +102,12 @@
                             $_SESSION['usuario'] = null;
                             fazerLogoff();
                             echo "<script> alert('Usuário atualizado com sucesso, faça login novamente...'); </script>";
-                            echo "<script> window.location.href = 'http://$host$uri/entrar.php'; </script>";
+                            echo "<script> window.location.href = 'https://$host$uri/entrar.php'; </script>";
                         }
                         else {
                             // Falha. Algum ou todos os atributos do usuário enviado a função de update tem valor nulo
                             echo "<script> alert('Algum valor não foi informado!'); </script>";
-                            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                            echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
                         }
                     }
                     elseif(isset($_POST['excluir'])) {      // Removendo
@@ -117,35 +117,35 @@
                             // Sucesso. Encerrar a sessão, apagar os dados e redirecionar para a página inicial
                             fazerLogoff();
                             echo "<script> alert('Cadastro removido com sucesso!'); </script>";
-                            echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+                            echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
                         }
                         else {
                             // De alguma forma, o ID do usuário não foi informado. Provável valor nulo para $_SESSION['usuario']
                             echo "<script> alert('Erro na remoção, o ID não está presente na sessão!'); </script>";
-                            echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                            echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
                         }
                     }
                 }
                 else {
                     // Usuário digitou uma senha atual errada/inválida
                     echo "<script> alert('A senha atual digitada está incorreta!'); </script>";
-                    echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                    echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
                 }
             }
             else {
                 // Usuário não digitou a senha atual
                 echo "<script> alert('Digite a senha atual para atualizar ou excluir este usuário!'); </script>";
-                echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+                echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
             }
         }
     }
     catch(MySQLException $sqle) {
         $stringException = 'Exceção encontrada durante a edição: ' . $sqle->getMessage();
         echo "<script> alert('Exceção: $stringException'); </script>";
-        echo "<script> window.location.href = 'http://$host$uri/sessao.php'; </script>";
+        echo "<script> window.location.href = 'https://$host$uri/sessao.php'; </script>";
     }
     catch (RuntimeException $rte) {
         echo "<script> alert('Exceção: $stringException'); </script>";
-        echo "<script> window.location.href = 'http://$host$uri/home.php'; </script>";
+        echo "<script> window.location.href = 'https://$host$uri/home.php'; </script>";
     }
 ?>
