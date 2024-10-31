@@ -27,8 +27,7 @@
      * @return bool - 'true' se houver uma sessão ativa, 'false' se não houver.
      * @author https://www.php.net/manual/en/function.session-status.php#113468
      */
-    function isSessaoAtiva() : bool
-    {
+    function isSessaoAtiva() : bool {
         if ( php_sapi_name() !== 'cli' ) {
             if ( version_compare(phpversion(), '5.4.0', '>=') ) {
                 return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
