@@ -2,6 +2,7 @@
     require_once '_internos/scripts.php';
     require_once '_internos/classes.php';
 
+    
     session_start();
 ?>
 
