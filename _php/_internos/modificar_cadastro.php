@@ -6,7 +6,7 @@
 
     session_start();
 
-    // Valores para redirecionamento da página com header()
+    // Valores para redirecionamento da página
     $host = $_SERVER['HTTP_HOST'];
     $uri = rtrim(dirname(dirname($_SERVER['PHP_SELF'])), '/\\');
 
