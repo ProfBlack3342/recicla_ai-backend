@@ -1,7 +1,7 @@
 <?php
 
 // Carrega o autoload do Composer para incluir as dependências necessárias
-require 'vendor/autoload.php';
+require '../../vendor/autoload.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
@@ -17,8 +17,7 @@ class StressTest
     {
         $this->url = $url; // Atribui a URL passada como parâmetro
         // Cria uma nova instância do WebDriver, conectando-se ao Selenium Server
-        $this->driver = RemoteWebDriver::create('http://localhost:4444/wd/hub', 
-        DesiredCapabilities::chrome());
+        $this->driver = RemoteWebDriver::create('http://localhost:4444/wd/hub', DesiredCapabilities::chrome());
     }
 
     // Método que executa o teste de estresse, fazendo várias requisições
